@@ -72,33 +72,6 @@ namespace GoggleConnectHDZ
             }
         }
 
-        public static void ReadFileList(TableLayoutPanel table)
-        {
-            RowStyle hStyle = table.RowStyles[table.RowCount - 1];
-            
-            using (StreamReader sr = new StreamReader(LocalList))
-            { 
-                string line;
-                while((line = sr.ReadLine()) != null)
-                {
-                    table.RowCount++;
-                    table.RowStyles.Add(new RowStyle(hStyle.SizeType, hStyle.Height));
-
-                    string[] field = line.Split(new char[] {' '});
-                    string name = field[4].Split(new char[] { '.' })[0];
-                    string size = (Math.Round(Double.Parse(field[0]) / Math.Pow(1024, 2), 1)).ToString() + " MB";
-                    var date = DateTime.Parse($"{field[1]} {field[2]}{field[3]}");
-                    
-                    table.Controls.Add(new LinkLabel() { Text = field[4], TextAlign = ContentAlignment.MiddleLeft }, 0, table.RowCount - 1);
-                    table.Controls.Add(new Label() { Text = date.ToString().Trim(), TextAlign = ContentAlignment.MiddleLeft }, 1, table.RowCount - 1);
-                    table.Controls.Add(new Label() { Text = size, TextAlign = ContentAlignment.MiddleRight }, 2, table.RowCount - 1);
-                    table.Controls.Add(new LinkLabel() { Name = name + "_C", Text = "C", TextAlign = ContentAlignment.MiddleLeft }, 3, table.RowCount - 1);
-                    table.Controls.Add(new LinkLabel() { Name = name + "_D", Text = "D", TextAlign = ContentAlignment.MiddleLeft }, 4, table.RowCount - 1);
-                    table.Controls.Add(new ProgressBar() { Name = name + "_D"}, 5, table.RowCount - 1);
-                }
-            }
-        }
-
         public FileInfo CopyFileToLocal()
         {
             var scp = new ScpClient(GoggleConnection);
