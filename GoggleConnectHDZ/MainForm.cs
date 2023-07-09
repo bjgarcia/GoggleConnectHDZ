@@ -14,6 +14,7 @@ using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+//using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace GoggleConnectHDZ
 {
@@ -25,14 +26,35 @@ namespace GoggleConnectHDZ
             "22",
             "root",
             "divimath",
-            "c:/temp"
-
+            "c:\temp"
         };
+
+     
 
         public MainForm()
         {
             InitializeComponent();
             Font curentfont = base.Font;
+
+            int tmargin = 35;
+            int rmargin = 24;
+            int lheight = 460;
+            int lwidth = 500;
+            int rwidth = 24;
+            int rheight = 24;
+            
+            LPanel.Location = new Point(rmargin, tmargin);
+            LPanel.Size = new Size(new Point(lwidth,lheight));
+
+            RPanel.Location = new Point(555, tmargin);
+            RPanel.Height = 460;
+
+            int footlevel = 505;
+            lblSavePath.Location = new Point(rmargin, footlevel);
+            txtSavePath.Location = new Point(80, footlevel);
+
+            lblIPAddress.Location = new Point(400, footlevel);
+            txtIPAddress.Location = new Point(500, footlevel);
 
             // initialize table
             this.tblMovieList.Controls.Add(new Label() { Font = new Font(curentfont, FontStyle.Bold), Text = "File Name", TextAlign = ContentAlignment.MiddleCenter }, 0, 0);
@@ -46,11 +68,12 @@ namespace GoggleConnectHDZ
             txtUser.Text = settings[2];
             txtPassword.PasswordChar = '*';
             txtPassword.Text = settings[3];
-            txtLocalFolder.Text = settings[4];
+            txtSavePath.Text = Environment.GetFolderPath(Environment.SpecialFolder.MyVideos);
+
 
             Shell goggleShell = new Shell(settings);
             //goggleShell.CreateFileList();
-            //goggleShell.CopyFileToLocal();
+            //goggleShell.CopyFileToLocal(Path.Combine("//tmp//", Shell.MovieList), Path.Combine(Path.GetTempPath(), Shell.MovieList));
             ReadFileList(this.tblMovieList);
             AssignLinkLabelHandler(this.tblMovieList);
         }
@@ -76,11 +99,16 @@ namespace GoggleConnectHDZ
             }
         }
 
+        public ProgressBar GetProgressBar(TableLayoutPanel table, string name)
+        {
+            return table.Controls.OfType<ProgressBar>().Where(x => x.Name == name).FirstOrDefault();
+        }
+
         public void ReadFileList(TableLayoutPanel table)
         {
             RowStyle hStyle = table.RowStyles[table.RowCount - 1];
 
-            using (StreamReader sr = new StreamReader(Shell.LocalList))
+            using (StreamReader sr = new StreamReader(Path.Combine(Path.GetTempPath(), Shell.MovieList)))
             {
                 string line;
                 while ((line = sr.ReadLine()) != null)
@@ -111,33 +139,62 @@ namespace GoggleConnectHDZ
 
         }
 
-        private void OpenFileLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void OpenFileLinkClicked(object sender, EventArgs e)
         { 
-            
-            
+     
         }
 
         private void CopyFileLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-
-
+            var linkLabel = (sender as LinkLabel);
+            linkLabel.Enabled = false;
+            string fileName = linkLabel.Name.Substring(0, linkLabel.Name.Length - 2);
+            var progressBar = GetProgressBar(tblMovieList, $"{fileName}_P");
+            progressBar.Style = ProgressBarStyle.Marquee;
+            progressBar.MarqueeAnimationSpeed = 19;    
+            
+            string localFile = Path.GetFullPath($"{settings[4]}/{fileName}.ts");
+            string remoteFile = $"//mnt//extsd//movies/{fileName}.ts";
+            /// mnt / extsd / movies
+            //await Shell.CopyFileToLocalAsync(remoteFile, localFile, settings);
+          
+            progressBar.MarqueeAnimationSpeed = 0;
+            progressBar.Style = ProgressBarStyle.Blocks;
+            progressBar.Value = progressBar.Maximum;
+            linkLabel.Enabled = true;
         }
 
         private void DeleteFileLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
+            var linkLabel = (sender as LinkLabel);
+            linkLabel.Enabled = false;
+            string fileName = linkLabel.Name.Substring(0, linkLabel.Name.Length - 2);
+            var progressBar = GetProgressBar(tblMovieList, $"{fileName}_P");
+            progressBar.Style = ProgressBarStyle.Marquee;
+            progressBar.MarqueeAnimationSpeed = 19;
 
+            string localFile = Path.GetFullPath($"{settings[4]}/{fileName}.ts");
+            string remoteFile = $"//mnt//extsd//movies/{fileName}.ts";
+            var info = Shell.CopyFileToLocal(remoteFile, localFile, settings);
+
+            progressBar.MarqueeAnimationSpeed = 0;
+            progressBar.Style = ProgressBarStyle.Blocks;
+            progressBar.Value = progressBar.Maximum;
+            linkLabel.Enabled = true;
 
         }
 
-
-
         private void savePathToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            DialogResult result = folderBrowserDialog1.ShowDialog();    
+        }
 
-            if(result == DialogResult.OK) 
-            { 
-                txtLocalFolder.Text = folderBrowserDialog1.SelectedPath;
+
+        private void txtLocalFolder_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            DialogResult result = folderBrowserDialog1.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                txtSavePath.Text = folderBrowserDialog1.SelectedPath;
             }
         }
     }

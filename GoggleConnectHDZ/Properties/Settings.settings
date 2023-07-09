@@ -1,7 +1,30 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)">
-  <Profiles>
-    <Profile Name="(Default)" />
-  </Profiles>
-  <Settings />
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="GoggleConnectHDZ.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="ipa1" Type="System.Byte" Scope="Application">
+      <Value Profile="(Default)">192</Value>
+    </Setting>
+    <Setting Name="ipa2" Type="System.Byte" Scope="Application">
+      <Value Profile="(Default)">168</Value>
+    </Setting>
+    <Setting Name="ipa3" Type="System.Byte" Scope="Application">
+      <Value Profile="(Default)">4</Value>
+    </Setting>
+    <Setting Name="ipa4" Type="System.Byte" Scope="Application">
+      <Value Profile="(Default)">104</Value>
+    </Setting>
+    <Setting Name="port" Type="System.Byte" Scope="Application">
+      <Value Profile="(Default)">22</Value>
+    </Setting>
+    <Setting Name="huser" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">"root"</Value>
+    </Setting>
+    <Setting Name="hpass" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">"divimath"</Value>
+    </Setting>
+    <Setting Name="lpath" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">""</Value>
+    </Setting>
+  </Settings>
 </SettingsFile>
